@@ -1,0 +1,622 @@
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"scheduler.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.task_pool_init,"ax",%progbits
+  18              		.align	1
+  19              		.global	task_pool_init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	task_pool_init:
+  25              	.LFB65:
+  26              		.file 1 "Core/Src/scheduler.c"
+   1:Core/Src/scheduler.c **** #include "scheduler.h"
+   2:Core/Src/scheduler.c **** 
+   3:Core/Src/scheduler.c **** #include "usart.h"
+   4:Core/Src/scheduler.c **** 
+   5:Core/Src/scheduler.c **** // 内存池和空闲链表
+   6:Core/Src/scheduler.c **** static TaskNode task_pool[TASK_POOL_SIZE];
+   7:Core/Src/scheduler.c **** static TaskNode *free_list = NULL;
+   8:Core/Src/scheduler.c **** 
+   9:Core/Src/scheduler.c **** // 初始化内存池
+  10:Core/Src/scheduler.c **** void task_pool_init(void) {
+  27              		.loc 1 10 27 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  11:Core/Src/scheduler.c ****     for (int i = 0; i < TASK_POOL_SIZE - 1; ++i) {
+  32              		.loc 1 11 5 view .LVU1
+  33              	.LBB2:
+  34              		.loc 1 11 10 view .LVU2
+  35              	.LVL0:
+  36              		.loc 1 11 14 is_stmt 0 view .LVU3
+  37 0000 0022     		movs	r2, #0
+  38              		.loc 1 11 5 view .LVU4
+  39 0002 07E0     		b	.L2
+  40              	.LVL1:
+  41              	.L3:
+  12:Core/Src/scheduler.c ****         task_pool[i].next = &task_pool[i + 1];
+  42              		.loc 1 12 9 is_stmt 1 discriminator 3 view .LVU5
+  43              		.loc 1 12 42 is_stmt 0 discriminator 3 view .LVU6
+  44 0004 511C     		adds	r1, r2, #1
+  45              		.loc 1 12 29 discriminator 3 view .LVU7
+  46 0006 084B     		ldr	r3, .L4
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 2
+
+
+  47 0008 03EB0110 		add	r0, r3, r1, lsl #4
+  48              		.loc 1 12 27 discriminator 3 view .LVU8
+  49 000c 03EB0213 		add	r3, r3, r2, lsl #4
+  50 0010 D860     		str	r0, [r3, #12]
+  11:Core/Src/scheduler.c ****     for (int i = 0; i < TASK_POOL_SIZE - 1; ++i) {
+  51              		.loc 1 11 45 is_stmt 1 discriminator 3 view .LVU9
+  52              	.LVL2:
+  11:Core/Src/scheduler.c ****     for (int i = 0; i < TASK_POOL_SIZE - 1; ++i) {
+  53              		.loc 1 11 45 is_stmt 0 discriminator 3 view .LVU10
+  54 0012 0A46     		mov	r2, r1
+  55              	.LVL3:
+  56              	.L2:
+  11:Core/Src/scheduler.c ****     for (int i = 0; i < TASK_POOL_SIZE - 1; ++i) {
+  57              		.loc 1 11 21 is_stmt 1 discriminator 1 view .LVU11
+  11:Core/Src/scheduler.c ****     for (int i = 0; i < TASK_POOL_SIZE - 1; ++i) {
+  58              		.loc 1 11 5 is_stmt 0 discriminator 1 view .LVU12
+  59 0014 0E2A     		cmp	r2, #14
+  60 0016 F5DD     		ble	.L3
+  61              	.LBE2:
+  13:Core/Src/scheduler.c ****     }
+  14:Core/Src/scheduler.c ****     task_pool[TASK_POOL_SIZE - 1].next = NULL;
+  62              		.loc 1 14 5 is_stmt 1 view .LVU13
+  63              		.loc 1 14 40 is_stmt 0 view .LVU14
+  64 0018 034B     		ldr	r3, .L4
+  65 001a 0022     		movs	r2, #0
+  66              	.LVL4:
+  67              		.loc 1 14 40 view .LVU15
+  68 001c C3F8FC20 		str	r2, [r3, #252]
+  15:Core/Src/scheduler.c ****     free_list = &task_pool[0];
+  69              		.loc 1 15 5 is_stmt 1 view .LVU16
+  70              		.loc 1 15 15 is_stmt 0 view .LVU17
+  71 0020 024A     		ldr	r2, .L4+4
+  72 0022 1360     		str	r3, [r2]
+  16:Core/Src/scheduler.c **** }
+  73              		.loc 1 16 1 view .LVU18
+  74 0024 7047     		bx	lr
+  75              	.L5:
+  76 0026 00BF     		.align	2
+  77              	.L4:
+  78 0028 00000000 		.word	.LANCHOR0
+  79 002c 00000000 		.word	.LANCHOR1
+  80              		.cfi_endproc
+  81              	.LFE65:
+  83              		.section	.text.alloc_task_node,"ax",%progbits
+  84              		.align	1
+  85              		.global	alloc_task_node
+  86              		.syntax unified
+  87              		.thumb
+  88              		.thumb_func
+  90              	alloc_task_node:
+  91              	.LFB66:
+  17:Core/Src/scheduler.c **** 
+  18:Core/Src/scheduler.c **** // 从池中分配节点
+  19:Core/Src/scheduler.c **** TaskNode *alloc_task_node(void) {
+  92              		.loc 1 19 33 is_stmt 1 view -0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 3
+
+
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              		@ link register save eliminated.
+  20:Core/Src/scheduler.c ****     if (!free_list) return NULL;
+  97              		.loc 1 20 5 view .LVU20
+  98              		.loc 1 20 9 is_stmt 0 view .LVU21
+  99 0000 034B     		ldr	r3, .L8
+ 100 0002 1868     		ldr	r0, [r3]
+ 101              		.loc 1 20 8 view .LVU22
+ 102 0004 18B1     		cbz	r0, .L6
+  21:Core/Src/scheduler.c ****     TaskNode *n = free_list;
+ 103              		.loc 1 21 5 is_stmt 1 view .LVU23
+ 104              	.LVL5:
+  22:Core/Src/scheduler.c ****     free_list = free_list->next;
+ 105              		.loc 1 22 5 view .LVU24
+ 106              		.loc 1 22 26 is_stmt 0 view .LVU25
+ 107 0006 C268     		ldr	r2, [r0, #12]
+ 108              		.loc 1 22 15 view .LVU26
+ 109 0008 1A60     		str	r2, [r3]
+  23:Core/Src/scheduler.c ****     n->next = NULL;
+ 110              		.loc 1 23 5 is_stmt 1 view .LVU27
+ 111              		.loc 1 23 13 is_stmt 0 view .LVU28
+ 112 000a 0023     		movs	r3, #0
+ 113 000c C360     		str	r3, [r0, #12]
+  24:Core/Src/scheduler.c ****     return n;
+ 114              		.loc 1 24 5 is_stmt 1 view .LVU29
+ 115              	.LVL6:
+ 116              	.L6:
+  25:Core/Src/scheduler.c **** }
+ 117              		.loc 1 25 1 is_stmt 0 view .LVU30
+ 118 000e 7047     		bx	lr
+ 119              	.L9:
+ 120              		.align	2
+ 121              	.L8:
+ 122 0010 00000000 		.word	.LANCHOR1
+ 123              		.cfi_endproc
+ 124              	.LFE66:
+ 126              		.section	.text.free_task_node,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	free_task_node
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	free_task_node:
+ 134              	.LVL7:
+ 135              	.LFB67:
+  26:Core/Src/scheduler.c **** 
+  27:Core/Src/scheduler.c **** // 释放节点回池
+  28:Core/Src/scheduler.c **** void free_task_node(TaskNode *n) {
+ 136              		.loc 1 28 34 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+  29:Core/Src/scheduler.c ****     n->next = free_list;
+ 141              		.loc 1 29 5 view .LVU32
+ 142              		.loc 1 29 13 is_stmt 0 view .LVU33
+ 143 0000 024B     		ldr	r3, .L11
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 4
+
+
+ 144 0002 1A68     		ldr	r2, [r3]
+ 145 0004 C260     		str	r2, [r0, #12]
+  30:Core/Src/scheduler.c ****     free_list = n;
+ 146              		.loc 1 30 5 is_stmt 1 view .LVU34
+ 147              		.loc 1 30 15 is_stmt 0 view .LVU35
+ 148 0006 1860     		str	r0, [r3]
+  31:Core/Src/scheduler.c **** }
+ 149              		.loc 1 31 1 view .LVU36
+ 150 0008 7047     		bx	lr
+ 151              	.L12:
+ 152 000a 00BF     		.align	2
+ 153              	.L11:
+ 154 000c 00000000 		.word	.LANCHOR1
+ 155              		.cfi_endproc
+ 156              	.LFE67:
+ 158              		.section	.text.register_task,"ax",%progbits
+ 159              		.align	1
+ 160              		.global	register_task
+ 161              		.syntax unified
+ 162              		.thumb
+ 163              		.thumb_func
+ 165              	register_task:
+ 166              	.LVL8:
+ 167              	.LFB68:
+  32:Core/Src/scheduler.c **** 
+  33:Core/Src/scheduler.c **** // 注册任务（仅在初始化期使用）
+  34:Core/Src/scheduler.c **** int register_task(TaskFunction func, uint32_t interval_ms, TaskNode **reg_task_list_head) {
+ 168              		.loc 1 34 91 is_stmt 1 view -0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+  35:Core/Src/scheduler.c ****     if (!reg_task_list_head || !func) return -2;
+ 172              		.loc 1 35 5 view .LVU38
+ 173              		.loc 1 35 8 is_stmt 0 view .LVU39
+ 174 0000 7AB1     		cbz	r2, .L15
+  34:Core/Src/scheduler.c ****     if (!reg_task_list_head || !func) return -2;
+ 175              		.loc 1 34 91 discriminator 2 view .LVU40
+ 176 0002 70B5     		push	{r4, r5, r6, lr}
+ 177              	.LCFI0:
+ 178              		.cfi_def_cfa_offset 16
+ 179              		.cfi_offset 4, -16
+ 180              		.cfi_offset 5, -12
+ 181              		.cfi_offset 6, -8
+ 182              		.cfi_offset 14, -4
+ 183 0004 0446     		mov	r4, r0
+ 184 0006 0D46     		mov	r5, r1
+ 185 0008 1646     		mov	r6, r2
+ 186              		.loc 1 35 29 discriminator 2 view .LVU41
+ 187 000a 68B1     		cbz	r0, .L16
+  36:Core/Src/scheduler.c **** 
+  37:Core/Src/scheduler.c ****     TaskNode *node = alloc_task_node();
+ 188              		.loc 1 37 5 is_stmt 1 view .LVU42
+ 189              		.loc 1 37 22 is_stmt 0 view .LVU43
+ 190 000c FFF7FEFF 		bl	alloc_task_node
+ 191              	.LVL9:
+  38:Core/Src/scheduler.c ****     if (!node) return -1;
+ 192              		.loc 1 38 5 is_stmt 1 view .LVU44
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 5
+
+
+ 193              		.loc 1 38 8 is_stmt 0 view .LVU45
+ 194 0010 68B1     		cbz	r0, .L17
+  39:Core/Src/scheduler.c **** 
+  40:Core/Src/scheduler.c ****     node->func = func;
+ 195              		.loc 1 40 5 is_stmt 1 view .LVU46
+ 196              		.loc 1 40 16 is_stmt 0 view .LVU47
+ 197 0012 0460     		str	r4, [r0]
+  41:Core/Src/scheduler.c ****     node->interval_ms = interval_ms;
+ 198              		.loc 1 41 5 is_stmt 1 view .LVU48
+ 199              		.loc 1 41 23 is_stmt 0 view .LVU49
+ 200 0014 4560     		str	r5, [r0, #4]
+  42:Core/Src/scheduler.c ****     node->countdown = interval_ms;
+ 201              		.loc 1 42 5 is_stmt 1 view .LVU50
+ 202              		.loc 1 42 21 is_stmt 0 view .LVU51
+ 203 0016 8560     		str	r5, [r0, #8]
+  43:Core/Src/scheduler.c ****     node->next = *reg_task_list_head;
+ 204              		.loc 1 43 5 is_stmt 1 view .LVU52
+ 205              		.loc 1 43 18 is_stmt 0 view .LVU53
+ 206 0018 3268     		ldr	r2, [r6]
+ 207              		.loc 1 43 16 view .LVU54
+ 208 001a C260     		str	r2, [r0, #12]
+  44:Core/Src/scheduler.c ****     *reg_task_list_head = node;
+ 209              		.loc 1 44 5 is_stmt 1 view .LVU55
+ 210              		.loc 1 44 25 is_stmt 0 view .LVU56
+ 211 001c 3060     		str	r0, [r6]
+  45:Core/Src/scheduler.c ****     return 0;
+ 212              		.loc 1 45 5 is_stmt 1 view .LVU57
+ 213              		.loc 1 45 12 is_stmt 0 view .LVU58
+ 214 001e 0020     		movs	r0, #0
+ 215              	.LVL10:
+ 216              	.L13:
+  46:Core/Src/scheduler.c **** }
+ 217              		.loc 1 46 1 view .LVU59
+ 218 0020 70BD     		pop	{r4, r5, r6, pc}
+ 219              	.LVL11:
+ 220              	.L15:
+ 221              	.LCFI1:
+ 222              		.cfi_def_cfa_offset 0
+ 223              		.cfi_restore 4
+ 224              		.cfi_restore 5
+ 225              		.cfi_restore 6
+ 226              		.cfi_restore 14
+  35:Core/Src/scheduler.c **** 
+ 227              		.loc 1 35 46 view .LVU60
+ 228 0022 6FF00100 		mvn	r0, #1
+ 229              	.LVL12:
+ 230              		.loc 1 46 1 view .LVU61
+ 231 0026 7047     		bx	lr
+ 232              	.LVL13:
+ 233              	.L16:
+ 234              	.LCFI2:
+ 235              		.cfi_def_cfa_offset 16
+ 236              		.cfi_offset 4, -16
+ 237              		.cfi_offset 5, -12
+ 238              		.cfi_offset 6, -8
+ 239              		.cfi_offset 14, -4
+  35:Core/Src/scheduler.c **** 
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 6
+
+
+ 240              		.loc 1 35 46 view .LVU62
+ 241 0028 6FF00100 		mvn	r0, #1
+ 242              	.LVL14:
+  35:Core/Src/scheduler.c **** 
+ 243              		.loc 1 35 46 view .LVU63
+ 244 002c F8E7     		b	.L13
+ 245              	.LVL15:
+ 246              	.L17:
+  38:Core/Src/scheduler.c **** 
+ 247              		.loc 1 38 23 view .LVU64
+ 248 002e 4FF0FF30 		mov	r0, #-1
+ 249              	.LVL16:
+  38:Core/Src/scheduler.c **** 
+ 250              		.loc 1 38 23 view .LVU65
+ 251 0032 F5E7     		b	.L13
+ 252              		.cfi_endproc
+ 253              	.LFE68:
+ 255              		.section	.text.scheduler_tick,"ax",%progbits
+ 256              		.align	1
+ 257              		.global	scheduler_tick
+ 258              		.syntax unified
+ 259              		.thumb
+ 260              		.thumb_func
+ 262              	scheduler_tick:
+ 263              	.LVL17:
+ 264              	.LFB69:
+  47:Core/Src/scheduler.c **** 
+  48:Core/Src/scheduler.c **** // 调度器 tick（每 1ms 或指定周期调用）
+  49:Core/Src/scheduler.c **** void scheduler_tick(TaskNode *reg_task_list_head, TaskNode **rdy_task_list_head) {
+ 265              		.loc 1 49 82 is_stmt 1 view -0
+ 266              		.cfi_startproc
+ 267              		@ args = 0, pretend = 0, frame = 0
+ 268              		@ frame_needed = 0, uses_anonymous_args = 0
+ 269              		.loc 1 49 82 is_stmt 0 view .LVU67
+ 270 0000 38B5     		push	{r3, r4, r5, lr}
+ 271              	.LCFI3:
+ 272              		.cfi_def_cfa_offset 16
+ 273              		.cfi_offset 3, -16
+ 274              		.cfi_offset 4, -12
+ 275              		.cfi_offset 5, -8
+ 276              		.cfi_offset 14, -4
+ 277 0002 0446     		mov	r4, r0
+ 278 0004 0D46     		mov	r5, r1
+  50:Core/Src/scheduler.c **** 
+  51:Core/Src/scheduler.c ****     TaskNode *cur = reg_task_list_head;
+ 279              		.loc 1 51 5 is_stmt 1 view .LVU68
+ 280              	.LVL18:
+  52:Core/Src/scheduler.c ****     while (cur) {
+ 281              		.loc 1 52 5 view .LVU69
+ 282              		.loc 1 52 11 is_stmt 0 view .LVU70
+ 283 0006 02E0     		b	.L23
+ 284              	.LVL19:
+ 285              	.L25:
+ 286              	.LBB3:
+  53:Core/Src/scheduler.c ****         if (cur->countdown > 0) {
+  54:Core/Src/scheduler.c ****             cur->countdown -= 1;
+  55:Core/Src/scheduler.c ****             if (cur->countdown == 0) {
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 7
+
+
+  56:Core/Src/scheduler.c ****                 TaskNode *ready = alloc_task_node();
+  57:Core/Src/scheduler.c ****                 if (ready) {
+  58:Core/Src/scheduler.c ****                     ready->func = cur->func;
+  59:Core/Src/scheduler.c ****                     ready->next = *rdy_task_list_head;
+  60:Core/Src/scheduler.c ****                     *rdy_task_list_head = ready;
+  61:Core/Src/scheduler.c ****                 }
+  62:Core/Src/scheduler.c ****                 cur->countdown = cur->interval_ms;
+ 287              		.loc 1 62 17 is_stmt 1 view .LVU71
+ 288              		.loc 1 62 37 is_stmt 0 view .LVU72
+ 289 0008 6368     		ldr	r3, [r4, #4]
+ 290              		.loc 1 62 32 view .LVU73
+ 291 000a A360     		str	r3, [r4, #8]
+ 292              	.LVL20:
+ 293              	.L24:
+ 294              		.loc 1 62 32 view .LVU74
+ 295              	.LBE3:
+  63:Core/Src/scheduler.c ****             }
+  64:Core/Src/scheduler.c ****         }
+  65:Core/Src/scheduler.c ****         cur = cur->next;
+ 296              		.loc 1 65 9 is_stmt 1 view .LVU75
+ 297              		.loc 1 65 13 is_stmt 0 view .LVU76
+ 298 000c E468     		ldr	r4, [r4, #12]
+ 299              	.LVL21:
+ 300              	.L23:
+  52:Core/Src/scheduler.c ****         if (cur->countdown > 0) {
+ 301              		.loc 1 52 11 is_stmt 1 view .LVU77
+ 302 000e 84B1     		cbz	r4, .L28
+  53:Core/Src/scheduler.c ****         if (cur->countdown > 0) {
+ 303              		.loc 1 53 9 view .LVU78
+  53:Core/Src/scheduler.c ****         if (cur->countdown > 0) {
+ 304              		.loc 1 53 16 is_stmt 0 view .LVU79
+ 305 0010 A368     		ldr	r3, [r4, #8]
+  53:Core/Src/scheduler.c ****         if (cur->countdown > 0) {
+ 306              		.loc 1 53 12 view .LVU80
+ 307 0012 002B     		cmp	r3, #0
+ 308 0014 FAD0     		beq	.L24
+  54:Core/Src/scheduler.c ****             if (cur->countdown == 0) {
+ 309              		.loc 1 54 13 is_stmt 1 view .LVU81
+  54:Core/Src/scheduler.c ****             if (cur->countdown == 0) {
+ 310              		.loc 1 54 28 is_stmt 0 view .LVU82
+ 311 0016 013B     		subs	r3, r3, #1
+ 312 0018 A360     		str	r3, [r4, #8]
+  55:Core/Src/scheduler.c ****                 TaskNode *ready = alloc_task_node();
+ 313              		.loc 1 55 13 is_stmt 1 view .LVU83
+  55:Core/Src/scheduler.c ****                 TaskNode *ready = alloc_task_node();
+ 314              		.loc 1 55 16 is_stmt 0 view .LVU84
+ 315 001a 002B     		cmp	r3, #0
+ 316 001c F6D1     		bne	.L24
+ 317              	.LBB4:
+  56:Core/Src/scheduler.c ****                 if (ready) {
+ 318              		.loc 1 56 17 is_stmt 1 view .LVU85
+  56:Core/Src/scheduler.c ****                 if (ready) {
+ 319              		.loc 1 56 35 is_stmt 0 view .LVU86
+ 320 001e FFF7FEFF 		bl	alloc_task_node
+ 321              	.LVL22:
+  57:Core/Src/scheduler.c ****                     ready->func = cur->func;
+ 322              		.loc 1 57 17 is_stmt 1 view .LVU87
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 8
+
+
+  57:Core/Src/scheduler.c ****                     ready->func = cur->func;
+ 323              		.loc 1 57 20 is_stmt 0 view .LVU88
+ 324 0022 0028     		cmp	r0, #0
+ 325 0024 F0D0     		beq	.L25
+  58:Core/Src/scheduler.c ****                     ready->next = *rdy_task_list_head;
+ 326              		.loc 1 58 21 is_stmt 1 view .LVU89
+  58:Core/Src/scheduler.c ****                     ready->next = *rdy_task_list_head;
+ 327              		.loc 1 58 38 is_stmt 0 view .LVU90
+ 328 0026 2268     		ldr	r2, [r4]
+  58:Core/Src/scheduler.c ****                     ready->next = *rdy_task_list_head;
+ 329              		.loc 1 58 33 view .LVU91
+ 330 0028 0260     		str	r2, [r0]
+  59:Core/Src/scheduler.c ****                     *rdy_task_list_head = ready;
+ 331              		.loc 1 59 21 is_stmt 1 view .LVU92
+  59:Core/Src/scheduler.c ****                     *rdy_task_list_head = ready;
+ 332              		.loc 1 59 35 is_stmt 0 view .LVU93
+ 333 002a 2A68     		ldr	r2, [r5]
+  59:Core/Src/scheduler.c ****                     *rdy_task_list_head = ready;
+ 334              		.loc 1 59 33 view .LVU94
+ 335 002c C260     		str	r2, [r0, #12]
+  60:Core/Src/scheduler.c ****                 }
+ 336              		.loc 1 60 21 is_stmt 1 view .LVU95
+  60:Core/Src/scheduler.c ****                 }
+ 337              		.loc 1 60 41 is_stmt 0 view .LVU96
+ 338 002e 2860     		str	r0, [r5]
+ 339 0030 EAE7     		b	.L25
+ 340              	.LVL23:
+ 341              	.L28:
+  60:Core/Src/scheduler.c ****                 }
+ 342              		.loc 1 60 41 view .LVU97
+ 343              	.LBE4:
+  66:Core/Src/scheduler.c ****     }
+  67:Core/Src/scheduler.c **** }
+ 344              		.loc 1 67 1 view .LVU98
+ 345 0032 38BD     		pop	{r3, r4, r5, pc}
+ 346              		.loc 1 67 1 view .LVU99
+ 347              		.cfi_endproc
+ 348              	.LFE69:
+ 350              		.section	.text.scheduler_run,"ax",%progbits
+ 351              		.align	1
+ 352              		.global	scheduler_run
+ 353              		.syntax unified
+ 354              		.thumb
+ 355              		.thumb_func
+ 357              	scheduler_run:
+ 358              	.LVL24:
+ 359              	.LFB70:
+  68:Core/Src/scheduler.c **** 
+  69:Core/Src/scheduler.c **** // 主循环中调用，执行 ready 表中的任务
+  70:Core/Src/scheduler.c **** void scheduler_run(TaskNode **rdy_task_list_head) {
+ 360              		.loc 1 70 51 is_stmt 1 view -0
+ 361              		.cfi_startproc
+ 362              		@ args = 0, pretend = 0, frame = 0
+ 363              		@ frame_needed = 0, uses_anonymous_args = 0
+  71:Core/Src/scheduler.c ****     if (!rdy_task_list_head || !*rdy_task_list_head) return;
+ 364              		.loc 1 71 5 view .LVU101
+ 365              		.loc 1 71 8 is_stmt 0 view .LVU102
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 9
+
+
+ 366 0000 88B1     		cbz	r0, .L35
+  70:Core/Src/scheduler.c ****     if (!rdy_task_list_head || !*rdy_task_list_head) return;
+ 367              		.loc 1 70 51 discriminator 2 view .LVU103
+ 368 0002 38B5     		push	{r3, r4, r5, lr}
+ 369              	.LCFI4:
+ 370              		.cfi_def_cfa_offset 16
+ 371              		.cfi_offset 3, -16
+ 372              		.cfi_offset 4, -12
+ 373              		.cfi_offset 5, -8
+ 374              		.cfi_offset 14, -4
+ 375              		.loc 1 71 33 discriminator 2 view .LVU104
+ 376 0004 0468     		ldr	r4, [r0]
+ 377              		.loc 1 71 29 discriminator 2 view .LVU105
+ 378 0006 6CB1     		cbz	r4, .L29
+  72:Core/Src/scheduler.c **** 
+  73:Core/Src/scheduler.c ****     TaskNode *cur = *rdy_task_list_head;
+ 379              		.loc 1 73 5 is_stmt 1 view .LVU106
+ 380              	.LVL25:
+  74:Core/Src/scheduler.c ****     *rdy_task_list_head = NULL;
+ 381              		.loc 1 74 5 view .LVU107
+ 382              		.loc 1 74 25 is_stmt 0 view .LVU108
+ 383 0008 0022     		movs	r2, #0
+ 384 000a 0260     		str	r2, [r0]
+  75:Core/Src/scheduler.c **** 
+  76:Core/Src/scheduler.c ****     while (cur) {
+ 385              		.loc 1 76 5 is_stmt 1 view .LVU109
+ 386              		.loc 1 76 11 is_stmt 0 view .LVU110
+ 387 000c 04E0     		b	.L31
+ 388              	.LVL26:
+ 389              	.L38:
+ 390              	.LBB5:
+  77:Core/Src/scheduler.c ****         TaskNode *next = cur->next;
+  78:Core/Src/scheduler.c ****         if (cur->func) cur->func();
+ 391              		.loc 1 78 24 is_stmt 1 discriminator 1 view .LVU111
+ 392 000e 9847     		blx	r3
+ 393              	.LVL27:
+ 394              	.L32:
+  79:Core/Src/scheduler.c ****         free_task_node(cur);
+ 395              		.loc 1 79 9 view .LVU112
+ 396 0010 2046     		mov	r0, r4
+ 397 0012 FFF7FEFF 		bl	free_task_node
+ 398              	.LVL28:
+  80:Core/Src/scheduler.c ****         cur = next;
+ 399              		.loc 1 80 9 view .LVU113
+ 400              		.loc 1 80 13 is_stmt 0 view .LVU114
+ 401 0016 2C46     		mov	r4, r5
+ 402              	.LVL29:
+ 403              	.L31:
+ 404              		.loc 1 80 13 view .LVU115
+ 405              	.LBE5:
+  76:Core/Src/scheduler.c ****         TaskNode *next = cur->next;
+ 406              		.loc 1 76 11 is_stmt 1 view .LVU116
+ 407 0018 24B1     		cbz	r4, .L29
+ 408              	.LBB6:
+  77:Core/Src/scheduler.c ****         if (cur->func) cur->func();
+ 409              		.loc 1 77 9 view .LVU117
+  77:Core/Src/scheduler.c ****         if (cur->func) cur->func();
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 10
+
+
+ 410              		.loc 1 77 19 is_stmt 0 view .LVU118
+ 411 001a E568     		ldr	r5, [r4, #12]
+ 412              	.LVL30:
+  78:Core/Src/scheduler.c ****         free_task_node(cur);
+ 413              		.loc 1 78 9 is_stmt 1 view .LVU119
+  78:Core/Src/scheduler.c ****         free_task_node(cur);
+ 414              		.loc 1 78 16 is_stmt 0 view .LVU120
+ 415 001c 2368     		ldr	r3, [r4]
+  78:Core/Src/scheduler.c ****         free_task_node(cur);
+ 416              		.loc 1 78 12 view .LVU121
+ 417 001e 002B     		cmp	r3, #0
+ 418 0020 F5D1     		bne	.L38
+ 419 0022 F5E7     		b	.L32
+ 420              	.LVL31:
+ 421              	.L29:
+  78:Core/Src/scheduler.c ****         free_task_node(cur);
+ 422              		.loc 1 78 12 view .LVU122
+ 423              	.LBE6:
+  81:Core/Src/scheduler.c ****     }
+  82:Core/Src/scheduler.c **** }
+ 424              		.loc 1 82 1 view .LVU123
+ 425 0024 38BD     		pop	{r3, r4, r5, pc}
+ 426              	.LVL32:
+ 427              	.L35:
+ 428              	.LCFI5:
+ 429              		.cfi_def_cfa_offset 0
+ 430              		.cfi_restore 3
+ 431              		.cfi_restore 4
+ 432              		.cfi_restore 5
+ 433              		.cfi_restore 14
+ 434              		.loc 1 82 1 view .LVU124
+ 435 0026 7047     		bx	lr
+ 436              		.cfi_endproc
+ 437              	.LFE70:
+ 439              		.section	.bss.free_list,"aw",%nobits
+ 440              		.align	2
+ 441              		.set	.LANCHOR1,. + 0
+ 444              	free_list:
+ 445 0000 00000000 		.space	4
+ 446              		.section	.bss.task_pool,"aw",%nobits
+ 447              		.align	2
+ 448              		.set	.LANCHOR0,. + 0
+ 451              	task_pool:
+ 452 0000 00000000 		.space	256
+ 452      00000000 
+ 452      00000000 
+ 452      00000000 
+ 452      00000000 
+ 453              		.text
+ 454              	.Letext0:
+ 455              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 456              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 457              		.file 4 "Core/Inc/scheduler.h"
+ARM GAS  C:\Users\percy\AppData\Local\Temp\ccL101eM.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 scheduler.c
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:18     .text.task_pool_init:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:24     .text.task_pool_init:00000000 task_pool_init
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:78     .text.task_pool_init:00000028 $d
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:84     .text.alloc_task_node:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:90     .text.alloc_task_node:00000000 alloc_task_node
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:122    .text.alloc_task_node:00000010 $d
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:127    .text.free_task_node:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:133    .text.free_task_node:00000000 free_task_node
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:154    .text.free_task_node:0000000c $d
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:159    .text.register_task:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:165    .text.register_task:00000000 register_task
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:256    .text.scheduler_tick:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:262    .text.scheduler_tick:00000000 scheduler_tick
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:351    .text.scheduler_run:00000000 $t
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:357    .text.scheduler_run:00000000 scheduler_run
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:440    .bss.free_list:00000000 $d
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:444    .bss.free_list:00000000 free_list
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:447    .bss.task_pool:00000000 $d
+C:\Users\percy\AppData\Local\Temp\ccL101eM.s:451    .bss.task_pool:00000000 task_pool
+
+NO UNDEFINED SYMBOLS
